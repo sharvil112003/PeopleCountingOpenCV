@@ -1,0 +1,83 @@
+Const ppLayoutTitle As Integer = 1
+Const ppLayoutText As Integer = 2
+
+Sub CreatePresentation()
+    Dim pptApp As Object
+    Dim pptPres As Object
+    Dim slideIndex As Integer
+    
+    On Error Resume Next ' Enable error handling
+    
+    ' Create a new instance of PowerPoint application
+    Set pptApp = CreateObject("PowerPoint.Application")
+    pptApp.Visible = True
+    
+    ' Create a new presentation
+    Set pptPres = pptApp.Presentations.Add
+    
+    ' Add slides
+    slideIndex = 0 ' Reset slide index
+    
+    ' Define color palette
+    Dim titleColor As Long
+    Dim contentColor As Long
+    titleColor = RGB(64, 120, 192) ' Blue
+    contentColor = RGB(0, 128, 64) ' Green
+    
+    ' Add title slide with background image and colorful text
+    slideIndex = AddSlideWithTitle(pptPres, slideIndex, "People Counting System using OpenCV", "An innovative solution for retail analytics", titleColor)
+    AddBackgroundImageToSlide pptPres.Slides(slideIndex), "TitleBackground.jpg"
+    
+    ' Add problem statement slide with background image and colorful text
+    slideIndex = AddSlideWithText(pptPres, slideIndex, "Problem Statement", "Manual counting of people entering and exiting a store is time-consuming and prone to errors. Our solution automates this process using computer vision techniques.", contentColor)
+    AddBackgroundImageToSlide pptPres.Slides(slideIndex), "ProblemBackground.jpg"
+    
+    ' Add solution overview slide with background image and colorful text
+    slideIndex = AddSlideWithText(pptPres, slideIndex, "Solution Overview", "Our solution utilizes OpenCV, a powerful library for computer vision tasks. By analyzing CCTV footage, we can accurately count the number of people entering and exiting the store in real-time.", contentColor)
+    AddBackgroundImageToSlide pptPres.Slides(slideIndex), "SolutionBackground.jpg"
+    
+    ' Add implementation details slide with background image and colorful text
+    slideIndex = AddSlideWithText(pptPres, slideIndex, "Implementation Details", _
+                                  "1. Video Preprocessing: Noise reduction, background subtraction, etc." & vbCrLf & _
+                                  "2. Object Detection: Detecting people in the video frames." & vbCrLf & _
+                                  "3. Counting Algorithm: Keeping track of people entering and exiting." & vbCrLf & _
+                                  "4. Display: Visualizing the count in real-time.", contentColor)
+    AddBackgroundImageToSlide pptPres.Slides(slideIndex), "ImplementationBackground.jpg"
+    
+    ' Add results slide with background image and colorful text
+    slideIndex = AddSlideWithText(pptPres, slideIndex, "Results", "Our system achieved an accuracy of over 95% in counting people entering and exiting the store. This significantly reduces the need for manual counting and provides valuable insights for retail analytics.", contentColor)
+    AddBackgroundImageToSlide pptPres.Slides(slideIndex), "ResultsBackground.jpg"
+    
+    ' Add closing slide with background image and colorful text
+    slideIndex = AddSlideWithTitle(pptPres, slideIndex, "Thank You", "Any Questions?", titleColor)
+    AddBackgroundImageToSlide pptPres.Slides(slideIndex), "ClosingBackground.jpg"
+    
+    ' Clean up
+    Set pptPres = Nothing
+    Set pptApp = Nothing
+End Sub
+
+Function AddSlideWithTitle(pptPres As Object, slideIndex As Integer, titleText As String, subTitleText As String, titleColor As Long) As Integer
+    slideIndex = slideIndex + 1
+    With pptPres.Slides.Add(slideIndex, ppLayoutTitle)
+        .Shapes(1).TextFrame.TextRange.Text = titleText
+        .Shapes(1).TextFrame.TextRange.Font.Color = titleColor
+        .Shapes(2).TextFrame.TextRange.Text = subTitleText
+    End With
+    AddSlideWithTitle = slideIndex
+End Function
+
+Function AddSlideWithText(pptPres As Object, slideIndex As Integer, titleText As String, bodyText As String, contentColor As Long) As Integer
+    slideIndex = slideIndex + 1
+    With pptPres.Slides.Add(slideIndex, ppLayoutText)
+        .Shapes(1).TextFrame.TextRange.Text = titleText
+        .Shapes(1).TextFrame.TextRange.Font.Color = contentColor
+        .Shapes(2).TextFrame.TextRange.Text = bodyText
+    End With
+    AddSlideWithText = slideIndex
+End Function
+
+Sub AddBackgroundImageToSlide(slide As Object, imagePath As String)
+    slide.FollowMasterBackground = msoFalse ' Disable inheriting master background
+    slide.Background.Fill.UserPicture (imagePath) ' Set background image
+End Sub
